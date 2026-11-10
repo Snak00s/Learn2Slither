@@ -20,5 +20,18 @@
 # include <unordered_map>
 # include <algorithm>
 # include <chrono>
+# include <unistd.h>
+
+typedef std::pair<int, int>  				SNAKE_POS;
+typedef std::vector<std::pair<int, int>>	SNAKE_VEC;
+
+typedef std::vector<std::vector<char>>		BOARD_VEC;
+
+enum class Snake_dir {
+	MOVE_UP,
+	MOVE_LEFT,
+	MOVE_DOWN,
+	MOVE_RIGHT
+};
 
 #endif

@@ -1,22 +1,19 @@
 #ifndef SNAKE_HPP
 # define SNAKE_HPP
 
-# include"Board.hpp"
-
-typedef std::pair<int, int>  				POS;
-typedef std::vector<std::pair<int, int>>	VEC_POS;
+#include"main.hpp"
 
 class Snake
 {
 	private:
-		int _x;
-		int _y;
-		int _bodySize;
-		int	_maxSize;
-		VEC_POS _snake;
+		int			_x;
+		int			_y;
+		int			_bodySize;
+		SNAKE_VEC	_snake;
 	
 	public:
-		Snake(Board const &board, int snakeMaxSize);
+		Snake(void);
+		Snake(BOARD_VEC &vec);
 		~Snake();
 
 		void	enlargeBody();
@@ -25,9 +22,11 @@ class Snake
 		void	checkWinCond();
 		void	checkLooseCond();
 
-		POS		getHeadPos() const;
+		void	move(Snake_dir dir);
 
-		VEC_POS	getSnake() const;
+		SNAKE_POS	getHeadPos() const;
+		SNAKE_VEC	getSnakeBody() const;
+		int			getBodySize() const;
 
 };
 

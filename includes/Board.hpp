@@ -1,7 +1,7 @@
 #ifndef BOARD_HPP
 # define BOARD_HPP
 
-#include"main.hpp"
+#include"Snake.hpp"
 
 class Board
 {
@@ -9,15 +9,20 @@ class Board
 		int								_board_size_x;
 		int								_board_size_y;
 		std::vector<std::vector<char>>	_board;
+		Snake							_snake;
 
 	public:
 		Board(int board_size_x, int board_size_y);
 		~Board(void);
-	public:
+
+		void							generateApple(const int ammount, const char type);
+		void							move_snake(Snake_dir dir);
+
 		std::vector<std::vector<char>>	getBoardVec(void) const;
 		int								getBoardSizeX(void) const;
 		int								getBoardSizeY(void) const;
-		void							generateApple(const int ammount, const char type);
+		const Snake						&getSnake() const;
+		Snake							&getNoConstSnake();
 		
 
 };
