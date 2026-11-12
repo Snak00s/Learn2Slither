@@ -8,9 +8,10 @@ OBJ_DIR			= ./objs/
 
 CXXFLAGS += -I$(HEADERS)
 
-SRCS			= main.cpp \
-					key.cpp \
-					class/Board.cpp \
+SRCS			= main.cpp	\
+					key.cpp	\
+					class/Game.cpp	\
+					class/Board.cpp	\
 					class/Snake.cpp 
 
 OBJS			= $(patsubst %.cpp, $(OBJ_DIR)%.o, $(SRCS))

@@ -1,13 +1,6 @@
-#include"Board.hpp"
+#include"Game.hpp"
 
-// W = wall
-// H = snake head
-// S = snake body segment
-// G = green apple
-// R = red apple
-// 0 = empty space
-
-bool	key_down(SDL_Event &event, Snake &snake);
+Snake_dir	key_down(SDL_Event &event);
 
 void	clear()
 {
@@ -65,31 +58,31 @@ int main(int argc, char **argv)
 {
 	std::srand(time(0));
 	(void)argc, (void)argv;
-	Board board(10, 10);
-
 	SDL_Renderer	*renderer;
 	SDL_Window		*win;
 
 	if (!init_sdl(&win, &renderer))
 		return(1);
 
+	Game	game(10, 10);
 	SDL_Event event;
 	bool running = 1;
 	while(running)
 	{
+		Snake_dir	move = Snake_dir::MOVE_NONE;
 		clear();
-		bool moved = 0;
-		(void)moved;
 		while(SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT) {
 				running = false;
 			}
 			if (event.type == SDL_KEYDOWN)
-				moved = key_down(event, board.getNoConstSnake());
+				move = key_down(event);
 		}
+		if (move != Snake_dir::MOVE_NONE)
+			game.playTurn(move);
 		SDL_RenderPresent(renderer);
-		std::cout << board << std::endl;
+		std::cout << game << std::endl;
 		SDL_Delay(10);
 	}
 	SDL_DestroyRenderer(renderer);

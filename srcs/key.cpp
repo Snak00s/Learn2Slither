@@ -1,25 +1,19 @@
 #include"Board.hpp"
 
-bool	key_down(SDL_Event &event, Snake &snake)
+Snake_dir	key_down(SDL_Event &event)
 {
-	bool moved = 1;
 	switch(event.key.keysym.sym)
 	{
 		case SDLK_w:
-			snake.move(Snake_dir::MOVE_UP);
-			break;
+			return(Snake_dir::MOVE_UP);
 		case SDLK_a:
-			snake.move(Snake_dir::MOVE_LEFT);
-			break;
+			return(Snake_dir::MOVE_LEFT);
 		case SDLK_s:
-			snake.move(Snake_dir::MOVE_DOWN);
-			break;
+			return(Snake_dir::MOVE_DOWN);
 		case SDLK_d:
-			snake.move(Snake_dir::MOVE_RIGHT);
-			break;
+			return(Snake_dir::MOVE_RIGHT);
 		default:
-			moved = 0;
-			break;
+			return(Snake_dir::MOVE_NONE);
 	}
-	return(moved)
+	return(Snake_dir::MOVE_NONE);
 }

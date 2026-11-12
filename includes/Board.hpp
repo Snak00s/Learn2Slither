@@ -6,27 +6,28 @@
 class Board
 {
 	private:
-		int								_board_size_x;
-		int								_board_size_y;
-		std::vector<std::vector<char>>	_board;
-		Snake							_snake;
+		int									_board_size_x;
+		int									_board_size_y;
+		std::vector<std::vector<char>>		_board;
 
 	public:
 		Board(int board_size_x, int board_size_y);
 		~Board(void);
 
+		void							resetBoard(int board_size_x, int board_size_y);
+
+		void							generateApple(SNAKE_VEC &snake, const int ammount, const char type);
 		void							generateApple(const int ammount, const char type);
-		void							move_snake(Snake_dir dir);
+		void							destroyApple(SNAKE_POS const &pos);
+		Board_tile						checkSnakePos(SNAKE_POS const &pos);
 
 		std::vector<std::vector<char>>	getBoardVec(void) const;
 		int								getBoardSizeX(void) const;
 		int								getBoardSizeY(void) const;
-		const Snake						&getSnake() const;
-		Snake							&getNoConstSnake();
 		
 
 };
 
-std::ostream	&operator<<( std::ostream &o, Board const &fixed );
+// std::ostream	&operator<<( std::ostream &o, Board const &fixed );
 
 #endif

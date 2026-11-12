@@ -9,25 +9,28 @@ class Snake
 		int			_x;
 		int			_y;
 		int			_bodySize;
-		SNAKE_VEC	_snake;
+		SNAKE_VEC	_snake_vec;
 	
 	public:
 		Snake(void);
-		Snake(BOARD_VEC &vec);
+		Snake(const BOARD_VEC &vec);
 		~Snake();
 
-		void	enlargeBody();
+		void	resetSnake(const BOARD_VEC &vec);
+
+		void	enlargeBody(SNAKE_POS const &tail);
 		void	decreaseBody();
 
-		void	checkWinCond();
-		void	checkLooseCond();
+		SNAKE_POS	move(Snake_dir dir);
+		void		snakeVision(const BOARD_VEC &vec);
 
-		void	move(Snake_dir dir);
-
-		SNAKE_POS	getHeadPos() const;
-		SNAKE_VEC	getSnakeBody() const;
+		SNAKE_POS	&getHeadPos();
+		SNAKE_POS	getTailPos();
+		SNAKE_VEC	&getSnakeBody();
 		int			getBodySize() const;
 
 };
+
+std::ostream	&operator<<(std::ostream &o, Snake &snake);
 
 #endif

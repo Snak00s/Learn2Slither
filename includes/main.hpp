@@ -22,16 +22,26 @@
 # include <chrono>
 # include <unistd.h>
 
-typedef std::pair<int, int>  				SNAKE_POS;
-typedef std::vector<std::pair<int, int>>	SNAKE_VEC;
+using SNAKE_POS=std::pair<int, int>;
+using SNAKE_VEC=std::vector<std::pair<int, int>>;
 
-typedef std::vector<std::vector<char>>		BOARD_VEC;
+using BOARD_VEC=std::vector<std::vector<char>>;
 
 enum class Snake_dir {
 	MOVE_UP,
 	MOVE_LEFT,
 	MOVE_DOWN,
-	MOVE_RIGHT
+	MOVE_RIGHT,
+	MOVE_NONE
+};
+
+enum class Board_tile {
+	TILE_NOTHING,
+	TILE_WALL,
+	TILE_BODY,
+	TILE_GREEN,
+	TILE_RED,
+	TILE_ERROR
 };
 
 #endif
