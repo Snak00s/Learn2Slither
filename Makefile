@@ -1,5 +1,5 @@
 CXX				= c++
-CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -O3
+CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -O3 -g
 
 LDFLAGS			= -lSDL2 -lGL
 HEADERS			= ./includes/

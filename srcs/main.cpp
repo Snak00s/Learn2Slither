@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	bool running = 1;
 	while(running)
 	{
-		Snake_dir	move = Snake_dir::MOVE_NONE;
+		Snake_dir move = Snake_dir::MOVE_NONE;
 		clear();
 		while(SDL_PollEvent(&event))
 		{
@@ -85,6 +85,14 @@ int main(int argc, char **argv)
 			game.playTurn(move);
 		SDL_RenderPresent(renderer);
 		print_board_vec(snake.getSnakeVision());
+		std::cout << "North : ";
+		print_board_row(snake.getNorthVision());
+		std::cout << "South : ";
+		print_board_row(snake.getSouthVision());
+		std::cout << "East : ";
+		print_board_row(snake.getEastVision());
+		std::cout << "West : ";
+		print_board_row(snake.getWestVision());
 		SDL_Delay(10);
 	}
 	SDL_DestroyRenderer(renderer);

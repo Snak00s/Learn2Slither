@@ -46,5 +46,6 @@ enum class Board_tile {
 };
 
 void	print_board_vec(BOARD_VEC const &vec);
+void	print_board_row(BOARD_ROW const &vec);
 
 #endif

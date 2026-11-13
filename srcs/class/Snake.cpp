@@ -11,13 +11,16 @@ Snake::Snake(const BOARD_VEC &vec) : _bodySize(1)
 	const int board_max_y = vec.size();
 
 	BOARD_ROW const row(board_max_x, ' ');
-	
+
+	//INIT Snake vec & vision
 	for (int i = 0; i < board_max_y; i++)
 	{
 		this->_snake_vision.emplace_back(row);
 		if (i < 3)
 			this->_snake_vec.emplace_back();
 	}
+
+	//INIT Snake head
 	int x = rand() % board_max_x;
 	int y = rand() % board_max_y;
 	while (vec[y][x] != '0')
@@ -27,6 +30,8 @@ Snake::Snake(const BOARD_VEC &vec) : _bodySize(1)
 	}
 	this->_snake_vec[0] = SNAKE_POS(x, y);
 
+
+	//INIT Snake body part
 	auto snake_beg = this->_snake_vec.begin();
 	auto snake_end = this->_snake_vec.end();
 	while (this->_bodySize != 3)
@@ -66,7 +71,11 @@ Snake::Snake(const BOARD_VEC &vec) : _bodySize(1)
 		y = next_y;
 		this->_bodySize++;
 	}
+
+	//INIT Snake prev pos
 	this->_prev_pos = this->_snake_vec[0];
+
+	//INIT Snake spawn vision
 	this->updateSnakeVision(vec, board_max_x, board_max_y);
 	return;
 }
@@ -78,18 +87,24 @@ Snake::~Snake(void)
 
 void	Snake::resetSnake(const BOARD_VEC &vec)
 {
+	//RESET SNAKE
 	this->_snake_vec.clear();
 	this->_bodySize = 1;
+	//-----------------------
 	const int board_max_x = vec[0].size();
 	const int board_max_y = vec.size();
+
 	BOARD_ROW const row(board_max_x, ' ');
-	
+
+	//INIT Snake vec & vision
 	for (int i = 0; i < board_max_y; i++)
 	{
 		this->_snake_vision[i] = row;
 		if (i < 3)
 			this->_snake_vec.emplace_back();
 	}
+
+	//INIT Snake head
 	int x = rand() % board_max_x;
 	int y = rand() % board_max_y;
 	while (vec[y][x] != '0')
@@ -99,6 +114,7 @@ void	Snake::resetSnake(const BOARD_VEC &vec)
 	}
 	this->_snake_vec[0] = SNAKE_POS(x, y);
 
+	//INIT Snake body part
 	auto snake_beg = this->_snake_vec.begin();
 	auto snake_end = this->_snake_vec.end();
 	while (this->_bodySize != 3)
@@ -139,7 +155,10 @@ void	Snake::resetSnake(const BOARD_VEC &vec)
 		this->_bodySize++;
 	}
 
+	//INIT Snake prev pos
 	this->_prev_pos = this->_snake_vec[0];
+
+	//INIT Snake spawn vision
 	this->updateSnakeVision(vec, board_max_x, board_max_y);
 	return;
 }
@@ -185,6 +204,10 @@ SNAKE_POS	Snake::move(Snake_dir dir) {
 
 void	Snake::clearOldSnakeVision(const int board_max_x, const int board_max_y)
 {
+	this->_north.clear();
+	this->_south.clear();
+	this->_east.clear();
+	this->_west.clear();
 	SNAKE_POS const &head = this->_prev_pos;
 
 	const int board_origin_x = head.first;
@@ -231,34 +254,59 @@ void	Snake::updateSnakeVision(const BOARD_VEC &vec, const int board_max_x, const
 
 	//North
 	int y = board_origin_y;
+	char c;
 	while (y >= 0)
 	{
+		c = vec[y][board_origin_x];
 		if (vision[y][board_origin_x] == ' ')
-			vision[y][board_origin_x] = vec[y][board_origin_x];
+		{
+			vision[y][board_origin_x] = c;
+			this->_north.push_back(c);
+		}
+		else if (vision[y][board_origin_x] != 'H')
+			this->_north.push_back('S');
 		y--;
 	}
 	//South
 	y = board_origin_y;
 	while (y < board_max_y)
 	{
+		c = vec[y][board_origin_x];
 		if (vision[y][board_origin_x] == ' ')
-			vision[y][board_origin_x] = vec[y][board_origin_x];
+		{
+			vision[y][board_origin_x] = c;
+			this->_south.push_back(c);
+		}
+		else if (vision[y][board_origin_x] != 'H')
+			this->_south.push_back('S');
 		y++;
 	}
 	//East
 	int x = board_origin_x;
 	while (x >= 0)
 	{
+		c = vec[board_origin_y][x];
 		if (vision[board_origin_y][x] == ' ')
-			vision[board_origin_y][x] = vec[board_origin_y][x];
+		{
+			vision[board_origin_y][x] = c;
+			this->_east.push_back(c);
+		}
+		else if (vision[board_origin_y][x] != 'H')
+			this->_east.push_back('S');
 		x--;
 	}
 	//West
 	x = board_origin_x;
 	while (x < board_max_x)
 	{
+		c = vec[board_origin_y][x];
 		if (vision[board_origin_y][x] == ' ')
-			vision[board_origin_y][x] = vec[board_origin_y][x];
+		{
+			vision[board_origin_y][x] = c;
+			this->_west.push_back(c);
+		}
+		else if (vision[board_origin_y][x] != 'H')
+			this->_west.push_back('S');
 		x++;
 	}
 	return ;
@@ -283,6 +331,30 @@ BOARD_VEC	&Snake::getSnakeVision(void) {
 int			Snake::getBodySize(void) const {
 	return this->_bodySize;
 }
+
+BOARD_ROW const	&Snake::getNorthVision(void) const
+{
+	return this->_north;
+}
+BOARD_ROW const	&Snake::getSouthVision(void) const
+{
+	return this->_south;
+}
+BOARD_ROW const	&Snake::getEastVision(void) const
+{
+	return this->_east;
+}
+BOARD_ROW const	&Snake::getWestVision(void) const
+{
+	return this->_west;
+}
+
+
+
+
+
+
+
 
 std::ostream	&operator<<(std::ostream &o, Snake &snake)
 {

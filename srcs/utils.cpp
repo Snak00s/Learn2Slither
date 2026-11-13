@@ -9,3 +9,10 @@ void	print_board_vec(BOARD_VEC const &vec)
 		std::cout << std::endl;
 	}
 }
+
+void	print_board_row(BOARD_ROW const &vec)
+{
+	for (auto &c : vec)
+			std::cout << c;
+	std::cout << std::endl;
+}
