@@ -28,6 +28,4 @@ class Board
 
 };
 
-// std::ostream	&operator<<( std::ostream &o, Board const &fixed );
-
 #endif

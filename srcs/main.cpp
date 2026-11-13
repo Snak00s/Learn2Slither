@@ -65,6 +65,8 @@ int main(int argc, char **argv)
 		return(1);
 
 	Game	game(10, 10);
+
+	Snake	&snake = game.getSnake();
 	SDL_Event event;
 	bool running = 1;
 	while(running)
@@ -82,7 +84,7 @@ int main(int argc, char **argv)
 		if (move != Snake_dir::MOVE_NONE)
 			game.playTurn(move);
 		SDL_RenderPresent(renderer);
-		std::cout << game << std::endl;
+		print_board_vec(snake.getSnakeVision());
 		SDL_Delay(10);
 	}
 	SDL_DestroyRenderer(renderer);

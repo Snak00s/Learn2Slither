@@ -26,6 +26,7 @@ using SNAKE_POS=std::pair<int, int>;
 using SNAKE_VEC=std::vector<std::pair<int, int>>;
 
 using BOARD_VEC=std::vector<std::vector<char>>;
+using BOARD_ROW=std::vector<char>;
 
 enum class Snake_dir {
 	MOVE_UP,
@@ -43,5 +44,7 @@ enum class Board_tile {
 	TILE_RED,
 	TILE_ERROR
 };
+
+void	print_board_vec(BOARD_VEC const &vec);
 
 #endif

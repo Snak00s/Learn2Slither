@@ -10,24 +10,29 @@ class Snake
 		int			_y;
 		int			_bodySize;
 		SNAKE_VEC	_snake_vec;
+		BOARD_VEC	_snake_vision;
+
+		SNAKE_POS	_prev_pos;
 	
 	public:
 		Snake(void);
 		Snake(const BOARD_VEC &vec);
-		~Snake();
+		~Snake(void);
 
 		void	resetSnake(const BOARD_VEC &vec);
 
 		void	enlargeBody(SNAKE_POS const &tail);
-		void	decreaseBody();
+		void	decreaseBody(void);
 
 		SNAKE_POS	move(Snake_dir dir);
-		void		snakeVision(const BOARD_VEC &vec);
-
-		SNAKE_POS	&getHeadPos();
-		SNAKE_POS	getTailPos();
-		SNAKE_VEC	&getSnakeBody();
-		int			getBodySize() const;
+		void		clearOldSnakeVision(const int board_max_x, const int board_max_y);
+		void		updateSnakeVision(const BOARD_VEC &vec, const int board_max_x, const int board_max_y);
+		
+		SNAKE_POS	&getHeadPos(void);
+		SNAKE_POS	getTailPos(void);
+		SNAKE_VEC	&getSnakeBody(void);
+		BOARD_VEC	&getSnakeVision(void);
+		int			getBodySize(void) const;
 
 };
 
