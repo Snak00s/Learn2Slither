@@ -1,7 +1,7 @@
 CXX				= c++
 CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -O3 -g
 
-LDFLAGS			= -lSDL2 -lGL
+# LDFLAGS			= -lSDL2 -lGL
 HEADERS			= ./includes/
 SRC_DIR			= ./srcs/
 OBJ_DIR			= ./objs/
@@ -13,7 +13,9 @@ SRCS			= main.cpp	\
 					utils.cpp	\
 					class/Game.cpp	\
 					class/Board.cpp	\
-					class/Snake.cpp 
+					class/Snake.cpp \
+					class/Agent.cpp \
+					class/Interpreter.cpp
 
 OBJS			= $(patsubst %.cpp, $(OBJ_DIR)%.o, $(SRCS))
 DEPS			= $(OBJS:.o=.d)
@@ -23,7 +25,8 @@ NAME			= Learn2Slither
 all: $(NAME)
 
 $(NAME): $(OBJS)
-		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
+		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
+# $(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 		@mkdir -p $(dir $@)

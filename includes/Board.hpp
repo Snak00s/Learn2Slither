@@ -19,7 +19,7 @@ class Board
 		void							generateApple(SNAKE_VEC &snake, const int ammount, const char type);
 		void							generateApple(const int ammount, const char type);
 		void							destroyApple(SNAKE_POS const &pos);
-		Board_tile						checkSnakePos(SNAKE_POS const &pos);
+		Board_tile						checkSnakePos(SNAKE_POS const &pos, SNAKE_VEC const &snake_body);
 
 		std::vector<std::vector<char>>	getBoardVec(void) const;
 		int								getBoardSizeX(void) const;

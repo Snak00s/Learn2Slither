@@ -56,26 +56,26 @@ void	Game::_applyGameRule(Board_tile const tile, SNAKE_POS const &head, SNAKE_PO
 		this->_lose();
 }
 
-void	Game::playTurn(Snake_dir dir)
-{
-	Snake &snake = this->_snake;
-	Board &board = this->_board;
-	SNAKE_POS const tail = snake.getTailPos();
-	SNAKE_POS const head = snake.move(dir);
+// void	Game::playTurn(Snake_dir dir)
+// {
+// 	Snake &snake = this->_snake;
+// 	Board &board = this->_board;
+// 	SNAKE_POS const tail = snake.getTailPos();
+// 	SNAKE_POS const head = snake.move(dir);
 
 	
-	Board_tile tile = board.checkSnakePos(head);
+// 	Board_tile tile = board.checkSnakePos(head);
 	
-	SNAKE_VEC const &body = snake.getSnakeBody();
-	if (std::count(body.begin(), body.end(), head) > 1)
-	tile = Board_tile::TILE_BODY;
+// 	SNAKE_VEC const &body = snake.getSnakeBody();
+// 	if (std::count(body.begin(), body.end(), head) > 1)
+// 	tile = Board_tile::TILE_BODY;
 	
-	this->_applyGameRule(tile, head, tail);
+// 	this->_applyGameRule(tile, head, tail);
 
-	snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
+// 	snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
 
-	return ;
-}
+// 	return ;
+// }
 
 void	Game::resetGame(void)
 {

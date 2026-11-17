@@ -1,6 +1,8 @@
 #include"Game.hpp"
+#include"Agent.hpp"
+#include"Interpreter.hpp"
 
-Snake_dir	key_down(SDL_Event &event);
+// Snake_dir	key_down(SDL_Event &event);
 
 void	clear()
 {
@@ -8,95 +10,88 @@ void	clear()
 	return ;
 }
 
-int init_sdl(SDL_Window **win, SDL_Renderer **renderer)
-{
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		std::cout << "SDL_Init : " << SDL_GetError() << std::endl;
-		return (1);
-	}
-
-	int n = SDL_GetNumRenderDrivers();
-	for (int i = 0; i < n; i++)
-	{
-		SDL_RendererInfo	openInfo;
-		SDL_GetRenderDriverInfo(i, &openInfo);
-		std::string name(openInfo.name);
-		if (name == "opengles2")
-		{
-			n = i;
-			break;
-		}
-	}
-
-	*win = SDL_CreateWindow(
-        "Feur", 
-        SDL_WINDOWPOS_CENTERED, 
-        SDL_WINDOWPOS_CENTERED, 
-        400, 300, 
-        SDL_WINDOW_SHOWN
-    );
-	if (!win)
-	{
-		std::cout << "Window : " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		return (0);
-	}
-	*renderer = SDL_CreateRenderer(*win, n, SDL_RENDERER_ACCELERATED);
-	if (!*renderer) {
-		std::cout << "Render could not be created because of WebGl, please restart your web browser." << std::endl;
-		SDL_DestroyWindow(*win);
-		SDL_Quit();
-		return (0);
-	}
-	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
-	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
-	return (1);
-}
-
 int main(int argc, char **argv)
 {
-	std::srand(time(0));
-	(void)argc, (void)argv;
-	SDL_Renderer	*renderer;
-	SDL_Window		*win;
-
-	if (!init_sdl(&win, &renderer))
-		return(1);
-
-	Game	game(10, 10);
-
-	Snake	&snake = game.getSnake();
-	SDL_Event event;
-	bool running = 1;
-	while(running)
+	try
 	{
-		Snake_dir move = Snake_dir::MOVE_NONE;
-		clear();
-		while(SDL_PollEvent(&event))
+		std::srand(time(0));
+		(void)argc, (void)argv;
+
+		// Game	game(10, 10);
+		Board	board(10, 10);
+		Snake	snake(board.getBoardVec());
+
+		Agent	agent(Interpreter::interpretView(snake.getNorthVision(),
+												snake.getSouthVision(),
+												snake.getEastVision(),
+												snake.getWestVision()), 0.5, 0.9);
+
+		int step = 0;
+		while(step < 100)
 		{
-			if (event.type == SDL_QUIT) {
-				running = false;
-			}
-			if (event.type == SDL_KEYDOWN)
-				move = key_down(event);
+			// clear();
+			//agent action
+			AgentAction const	action = agent.takeAction();
+
+			//apply on snake
+			SNAKE_POS const		pos = snake.agentMove(action);
+			std::cout << "x = " << pos.first << " | " << "y = " << pos.second << std::endl;
+			snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
+
+			SNAKE_VEC &snake_body = snake.getSnakeBody();
+			//check snake board tile
+			Board_tile			tile = board.checkSnakePos(pos, snake_body);
+
+			//interpret tile and snake view
+			const int			reward = Interpreter::interpretTileReward(tile);		//main reward
+			const uint32_t		state = Interpreter::interpretView(snake.getNorthVision(),
+																snake.getSouthVision(),
+																snake.getEastVision(),
+																snake.getWestVision()); //next state
+			//send state and reward to agent and update q-table
+			agent.updateQTable(state, reward);
+			//loop
+
+			step++;
 		}
-		if (move != Snake_dir::MOVE_NONE)
-			game.playTurn(move);
-		SDL_RenderPresent(renderer);
-		print_board_vec(snake.getSnakeVision());
-		std::cout << "North : ";
-		print_board_row(snake.getNorthVision());
-		std::cout << "South : ";
-		print_board_row(snake.getSouthVision());
-		std::cout << "East : ";
-		print_board_row(snake.getEastVision());
-		std::cout << "West : ";
-		print_board_row(snake.getWestVision());
-		SDL_Delay(10);
+		for (auto &item : agent.getQTable())
+		{
+			std::cout << item.first << std::endl;
+			print_vector(item.second);
+		}
+		std::cout << "SIZE = " << agent.getQTable().size() << std::endl;
+		return(0);
 	}
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(win);
-	SDL_Quit();
-	return(0);
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 }
+
+//state actuel : state debut de loop
+//state next : state fin de loop
+
+//donc pour update la q-table il faut garder en memoir le state actuel et futur
+
+
+// 01010100	00000000 00010101 00000000
+// 00000000 00010101 00000000 00000000
+
+// 			S	W	R	G
+
+// north	0	0	0	0
+
+// south	1	1	1	0
+
+// east		0	1	1	1
+
+// west		0	0	0	0
+
+// valeur = ordre apparition (0=premier, 1, 2, 3=dernier);
+// si valeur (S ou R ou G) == valeur W -> y'a pas
+
+// 000S00G0W
+
+//	North			South		East			West
+// 00 00 00 00 - 01 01 01 00 - 00 01 01 01 - 00 00 00 00
+// S  W  R  G  - S  W  R  G  - S  W  R  G  - S  W  R  G

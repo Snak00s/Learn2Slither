@@ -9,6 +9,7 @@ class Snake
 		int			_x;
 		int			_y;
 		int			_bodySize;
+		Compass		_dir;
 		SNAKE_VEC	_snake_vec;
 		BOARD_VEC	_snake_vision;
 
@@ -18,6 +19,10 @@ class Snake
 		BOARD_ROW	_west;
 
 		SNAKE_POS	_prev_pos;
+
+		void			_applyAgentAction();
+		void			_turnLeft(void);
+		void			_turnRight(void);
 	
 	public:
 		Snake(void);
@@ -29,7 +34,8 @@ class Snake
 		void	enlargeBody(SNAKE_POS const &tail);
 		void	decreaseBody(void);
 
-		SNAKE_POS	move(Snake_dir dir);
+		// SNAKE_POS	move(Snake_dir dir);
+		SNAKE_POS	agentMove(AgentAction action);
 		void		clearOldSnakeVision(const int board_max_x, const int board_max_y);
 		void		updateSnakeVision(const BOARD_VEC &vec, const int board_max_x, const int board_max_y);
 		

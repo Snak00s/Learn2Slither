@@ -21,6 +21,8 @@
 # include <algorithm>
 # include <chrono>
 # include <unistd.h>
+# include <bit>
+# include <format>
 
 using SNAKE_POS=std::pair<int, int>;
 using SNAKE_VEC=std::vector<std::pair<int, int>>;
@@ -36,6 +38,13 @@ enum class Snake_dir {
 	MOVE_NONE
 };
 
+enum class Compass {
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST
+};
+
 enum class Board_tile {
 	TILE_NOTHING,
 	TILE_WALL,
@@ -45,7 +54,14 @@ enum class Board_tile {
 	TILE_ERROR
 };
 
+enum class AgentAction {
+	IDLE,
+	TURN_RIGHT,
+	TURN_LEFT
+};
+
 void	print_board_vec(BOARD_VEC const &vec);
 void	print_board_row(BOARD_ROW const &vec);
+void	print_vector(std::vector<double> const &vec);
 
 #endif

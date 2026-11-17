@@ -90,7 +90,7 @@ void	Board::generateApple(SNAKE_VEC &snake, const int ammount, const char type)
 	return;
 }
 
-Board_tile	Board::checkSnakePos(SNAKE_POS const &pos)
+Board_tile	Board::checkSnakePos(SNAKE_POS const &pos, SNAKE_VEC const &snake_body)
 {
 	const int x = pos.first;
 	const int y = pos.second;
@@ -100,18 +100,20 @@ Board_tile	Board::checkSnakePos(SNAKE_POS const &pos)
 	switch (tile)
 	{
 	case '0':
+	{
+		auto snake_end = snake_body.end();
+		if (std::find(snake_body.begin(), snake_end, pos) != snake_end)
+			return (Board_tile::TILE_BODY);
 		return (Board_tile::TILE_NOTHING);
+	}
 	case 'W':
 		return (Board_tile::TILE_WALL);
 	case 'G':
 		return (Board_tile::TILE_GREEN);
 	case 'R':
 		return (Board_tile::TILE_RED);
-
-	default:
-		return (Board_tile::TILE_ERROR);
 	}
-	return (Board_tile::TILE_ERROR);
+	return (Board_tile::TILE_NOTHING);
 }
 
 // -------------------------------------------------------------

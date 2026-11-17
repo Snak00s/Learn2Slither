@@ -77,6 +77,14 @@ Snake::Snake(const BOARD_VEC &vec) : _bodySize(1)
 
 	//INIT Snake spawn vision
 	this->updateSnakeVision(vec, board_max_x, board_max_y);
+	if (this->_north[0] == 'S')
+		this->_dir = Compass::SOUTH;
+	else if (this->_south[0] == 'S')
+		this->_dir = Compass::NORTH;
+	else if (this->_west[0] == 'S')
+		this->_dir = Compass::EAST;
+	else if (this->_east[0] == 'S')
+		this->_dir = Compass::WEST;
 	return;
 }
 
@@ -160,6 +168,14 @@ void	Snake::resetSnake(const BOARD_VEC &vec)
 
 	//INIT Snake spawn vision
 	this->updateSnakeVision(vec, board_max_x, board_max_y);
+	if (this->_north[0] == 'S')
+		this->_dir = Compass::SOUTH;
+	else if (this->_south[0] == 'S')
+		this->_dir = Compass::NORTH;
+	else if (this->_west[0] == 'S')
+		this->_dir = Compass::EAST;
+	else if (this->_east[0] == 'S')
+		this->_dir = Compass::WEST;
 	return;
 }
 
@@ -175,30 +191,123 @@ void	Snake::decreaseBody(void) {
 	return ;
 }
 
-SNAKE_POS	Snake::move(Snake_dir dir) {
+// SNAKE_POS	Snake::move(Snake_dir dir) {
+
+// 	this->_prev_pos = this->_snake_vec[0];
+
+// 	for (int i = this->_bodySize - 1; i > 0; i--)
+// 		this->_snake_vec[i] = this->_snake_vec[i - 1];
+// 	switch (dir)
+// 	{
+// 		case Snake_dir::MOVE_UP:
+// 			this->_snake_vec[0].second -= 1;
+// 			break;
+// 		case Snake_dir::MOVE_LEFT:
+// 			this->_snake_vec[0].first -= 1;
+// 			break;
+// 		case Snake_dir::MOVE_DOWN:
+// 			this->_snake_vec[0].second += 1;
+// 			break;
+// 		case Snake_dir::MOVE_RIGHT:
+// 			this->_snake_vec[0].first += 1;
+// 			break;
+		
+// 		default:
+// 			break;
+// 	}
+// 	return (this->getHeadPos());
+// }
+
+void		Snake::_applyAgentAction()
+{
+	switch (this->_dir)
+	{
+	case Compass::NORTH:
+		this->_snake_vec[0].second -= 1;
+		break;
+	case Compass::SOUTH:
+		this->_snake_vec[0].second += 1;
+		break;
+	case Compass::EAST:
+		this->_snake_vec[0].first += 1;
+		break;
+	case Compass::WEST:
+		this->_snake_vec[0].first -= 1;
+		break;
+	default:
+		break;
+	}
+}
+
+void		Snake::_turnLeft(void)
+{
+	switch (this->_dir)
+	{
+		case Compass::NORTH:
+			this->_dir = Compass::WEST;
+			break;
+
+		case Compass::WEST:
+			this->_dir = Compass::SOUTH;
+			break;
+
+		case Compass::SOUTH:
+			this->_dir = Compass::EAST;
+			break;
+
+		case Compass::EAST:
+			this->_dir = Compass::NORTH;
+
+		default:
+			break;
+	}
+	return ;
+}
+
+void		Snake::_turnRight(void)
+{
+	switch (this->_dir)
+	{
+		case Compass::NORTH:
+			this->_dir = Compass::EAST;
+			break;
+
+		case Compass::WEST:
+			this->_dir = Compass::NORTH;
+			break;
+
+		case Compass::SOUTH:
+			this->_dir = Compass::WEST;
+			break;
+
+		case Compass::EAST:
+			this->_dir = Compass::SOUTH;
+
+		default:
+			break;
+	}
+	return ;
+}
+
+SNAKE_POS	Snake::agentMove(AgentAction action) {
 
 	this->_prev_pos = this->_snake_vec[0];
 
 	for (int i = this->_bodySize - 1; i > 0; i--)
 		this->_snake_vec[i] = this->_snake_vec[i - 1];
-	switch (dir)
+	switch (action)
 	{
-		case Snake_dir::MOVE_UP:
-			this->_snake_vec[0].second -= 1;
+		case AgentAction::TURN_LEFT:
+			this->_turnLeft();
 			break;
-		case Snake_dir::MOVE_LEFT:
-			this->_snake_vec[0].first -= 1;
-			break;
-		case Snake_dir::MOVE_DOWN:
-			this->_snake_vec[0].second += 1;
-			break;
-		case Snake_dir::MOVE_RIGHT:
-			this->_snake_vec[0].first += 1;
+		case AgentAction::TURN_RIGHT:
+			this->_turnRight();
 			break;
 		
 		default:
 			break;
 	}
+	this->_applyAgentAction();
 	return (this->getHeadPos());
 }
 

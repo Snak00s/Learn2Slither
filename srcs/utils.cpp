@@ -16,3 +16,12 @@ void	print_board_row(BOARD_ROW const &vec)
 			std::cout << c;
 	std::cout << std::endl;
 }
+
+void	print_vector(std::vector<double> const &vec)
+{
+	for (auto &d : vec)
+	{
+		std::cout << d << " | ";
+	}
+	std::cout << std::endl;
+}
