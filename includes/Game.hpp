@@ -10,7 +10,7 @@ class Game
 		Snake	_snake;
 		bool	_running;
 
-		void	_applyGameRule(Board_tile const tile, SNAKE_POS const &head, SNAKE_POS const &tail);
+		GameEvent	_applyGameRule(BoardTile const tile, SNAKE_POS const &head, SNAKE_POS const &tail);
 		void	_lose(void);
 		void	_win(void);
 	
@@ -22,7 +22,7 @@ class Game
 		Snake		&getSnake(void);
 		bool		getGameRunning(void);
 		
-		void		playTurn(Snake_dir dir);
+		GameEvent	playTurn(AgentAction action);
 		void		resetGame(void);
 
 };

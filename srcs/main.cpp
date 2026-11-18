@@ -17,33 +17,29 @@ int main(int argc, char **argv)
 		std::srand(time(0));
 		(void)argc, (void)argv;
 
-		// Game	game(10, 10);
-		Board	board(10, 10);
-		Snake	snake(board.getBoardVec());
+		Game	game(10, 10);
+		Snake &snake = game.getSnake();
+		// Board &board = game.getBoard();
 
 		Agent	agent(Interpreter::interpretView(snake.getNorthVision(),
 												snake.getSouthVision(),
 												snake.getEastVision(),
 												snake.getWestVision()), 0.5, 0.9);
 
-		int step = 0;
-		while(step < 100)
+		int	loose = 0;
+		while(loose < 1000)
 		{
 			// clear();
 			//agent action
 			AgentAction const	action = agent.takeAction();
 
-			//apply on snake
-			SNAKE_POS const		pos = snake.agentMove(action);
-			std::cout << "x = " << pos.first << " | " << "y = " << pos.second << std::endl;
-			snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
+			//---------------------------------------------------------------------
 
-			SNAKE_VEC &snake_body = snake.getSnakeBody();
-			//check snake board tile
-			Board_tile			tile = board.checkSnakePos(pos, snake_body);
+			GameEvent event = game.playTurn(action);
+			//----------------------------------------------------------------------
 
 			//interpret tile and snake view
-			const int			reward = Interpreter::interpretTileReward(tile);		//main reward
+			const int			reward = Interpreter::interpretEventReward(event);		//main reward
 			const uint32_t		state = Interpreter::interpretView(snake.getNorthVision(),
 																snake.getSouthVision(),
 																snake.getEastVision(),
@@ -52,7 +48,13 @@ int main(int argc, char **argv)
 			agent.updateQTable(state, reward);
 			//loop
 
-			step++;
+			std::cout << game << std::endl;
+			std::cout << static_cast<int>(event) << std::endl;
+
+			if (event == GameEvent::LOOSE)
+				loose++;
+
+			sleep(1);
 		}
 		for (auto &item : agent.getQTable())
 		{
@@ -60,6 +62,7 @@ int main(int argc, char **argv)
 			print_vector(item.second);
 		}
 		std::cout << "SIZE = " << agent.getQTable().size() << std::endl;
+		std::cout << "NBR LOOSE : " << loose << std::endl;
 		return(0);
 	}
 	catch(const std::exception& e)

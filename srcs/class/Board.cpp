@@ -15,8 +15,8 @@ Board::Board(int board_size_x, int board_size_y): _board_size_x(board_size_x + 2
 			this->_board[i][0] = this->_board[i][this->_board_size_x - 1] = 'W';
 		}
 	}
-	this->generateApple(2, 'G');
-	this->generateApple(1, 'R');
+	// this->generateApple(2, 'G');
+	// this->generateApple(1, 'R');
 	return;
 }
 
@@ -43,8 +43,8 @@ void	Board::resetBoard(int board_size_x, int board_size_y)
 			this->_board[i][0] = this->_board[i][this->_board_size_x - 1] = 'W';
 		}
 	}
-	this->generateApple(2, 'G');
-	this->generateApple(1, 'R');
+	// this->generateApple(2, 'G');
+	// this->generateApple(1, 'R');
 	return;
 }
 
@@ -90,7 +90,7 @@ void	Board::generateApple(SNAKE_VEC &snake, const int ammount, const char type)
 	return;
 }
 
-Board_tile	Board::checkSnakePos(SNAKE_POS const &pos, SNAKE_VEC const &snake_body)
+BoardTile	Board::checkSnakePos(SNAKE_POS const &pos, SNAKE_VEC const &snake_body)
 {
 	const int x = pos.first;
 	const int y = pos.second;
@@ -99,21 +99,21 @@ Board_tile	Board::checkSnakePos(SNAKE_POS const &pos, SNAKE_VEC const &snake_bod
 
 	switch (tile)
 	{
-	case '0':
-	{
-		auto snake_end = snake_body.end();
-		if (std::find(snake_body.begin(), snake_end, pos) != snake_end)
-			return (Board_tile::TILE_BODY);
-		return (Board_tile::TILE_NOTHING);
+		case '0':
+		{
+			auto snake_end = snake_body.end();
+			if (std::find(snake_body.begin() + 1, snake_end, pos) != snake_end)
+				return (BoardTile::TILE_BODY);
+			return (BoardTile::TILE_NOTHING);
+		}
+		case 'W':
+			return (BoardTile::TILE_WALL);
+		case 'G':
+			return (BoardTile::TILE_GREEN);
+		case 'R':
+			return (BoardTile::TILE_RED);
 	}
-	case 'W':
-		return (Board_tile::TILE_WALL);
-	case 'G':
-		return (Board_tile::TILE_GREEN);
-	case 'R':
-		return (Board_tile::TILE_RED);
-	}
-	return (Board_tile::TILE_NOTHING);
+	return (BoardTile::TILE_NOTHING);
 }
 
 // -------------------------------------------------------------

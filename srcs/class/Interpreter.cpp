@@ -1,22 +1,20 @@
 #include"Interpreter.hpp"
 
-int Interpreter::interpretTileReward(Board_tile const tile)
+int Interpreter::interpretEventReward(GameEvent const event)
 {
-	switch (tile)
+	switch (event)
 	{
-	case Board_tile::TILE_NOTHING:
-		return (-1);
-	case Board_tile::TILE_WALL:
-		return (-3);
-	case Board_tile::TILE_BODY:
-		return (-3);
-	case Board_tile::TILE_GREEN:
-		return (3);
-	case Board_tile::TILE_RED:
-		return (-2);
-	
-	default:
-		return (0);
+		case GameEvent::NOTHING:
+			return (-1);
+		case GameEvent::LOOSE:
+			return (-3);
+		case GameEvent::DECREASE:
+			return (-2);
+		case GameEvent::ENLARGE:
+			return (3);
+		
+		default:
+			return(0);
 	}
 }
 uint8_t	Interpreter::interpretRowState(BOARD_ROW const &row)
@@ -31,25 +29,25 @@ uint8_t	Interpreter::interpretRowState(BOARD_ROW const &row)
 	{
 		switch (c)
 		{
-		case 'S':
-			if (s_order == -1)
-				s_order = placement++;
-			break;
-		case 'W':
-			if (w_order == -1)
-				w_order = placement++;
-			break;
-		case 'G':
-			if (g_order == -1)
-				g_order = placement++;
-			break;
-		case 'R':
-			if (r_order == -1)
-				r_order = placement++;
-			break;
-		
-		default:
-			break;
+			case 'S':
+				if (s_order == -1)
+					s_order = placement++;
+				break;
+			case 'W':
+				if (w_order == -1)
+					w_order = placement++;
+				break;
+			case 'G':
+				if (g_order == -1)
+					g_order = placement++;
+				break;
+			case 'R':
+				if (r_order == -1)
+					r_order = placement++;
+				break;
+			
+			default:
+				break;
 		}
 	}
 	if (w_order == 0 && row[0] != 'W')

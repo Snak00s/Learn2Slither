@@ -2,6 +2,8 @@
 
 Game::Game(const int board_size_x, const int board_size_y) : _board(board_size_x, board_size_y), _running(1) {
 	this->_snake = Snake(this->_board.getBoardVec());
+	this->_board.generateApple(this->_snake.getSnakeBody(), 2, 'G');
+	this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'R');
 	return ;
 }
 
@@ -26,56 +28,62 @@ void	Game::_lose(void)
 	return ;
 }
 
-void	Game::_applyGameRule(Board_tile const tile, SNAKE_POS const &head, SNAKE_POS const &tail)
+GameEvent	Game::_applyGameRule(BoardTile const tile, SNAKE_POS const &head, SNAKE_POS const &tail)
 {
+	GameEvent event = GameEvent::NOTHING;
 	switch (tile)
 	{
-	case Board_tile::TILE_NOTHING:
-		break;
-	case Board_tile::TILE_WALL:
-		this->_lose();
-		break;
-	case Board_tile::TILE_BODY:
-		this->_lose();
-		break;
-	case Board_tile::TILE_GREEN:
-		this->_snake.enlargeBody(tail);
-		this->_board.destroyApple(head);
-		this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'G');
-		break;
-	case Board_tile::TILE_RED:
-		this->_snake.decreaseBody();
-		this->_board.destroyApple(head);
-		this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'R');
-		break;
-	
-	default:
-		break;
+		case BoardTile::TILE_NOTHING:
+			break;
+		case BoardTile::TILE_WALL:
+			this->_lose();
+			event = GameEvent::LOOSE;
+			break;
+		case BoardTile::TILE_BODY:
+			this->_lose();
+			event = GameEvent::LOOSE;
+			break;
+		case BoardTile::TILE_GREEN:
+			this->_snake.enlargeBody(tail);
+			this->_board.destroyApple(head);
+			this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'G');
+			event = GameEvent::ENLARGE;
+			break;
+		case BoardTile::TILE_RED:
+			this->_snake.decreaseBody();
+			this->_board.destroyApple(head);
+			this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'R');
+			event = GameEvent::DECREASE;
+			break;
+		
+		default:
+			break;
 	}
 	if (this->_snake.getBodySize() < 1)
+	{
 		this->_lose();
+		event = GameEvent::LOOSE;
+	}
+	return (event);
 }
 
-// void	Game::playTurn(Snake_dir dir)
-// {
-// 	Snake &snake = this->_snake;
-// 	Board &board = this->_board;
-// 	SNAKE_POS const tail = snake.getTailPos();
-// 	SNAKE_POS const head = snake.move(dir);
+GameEvent	Game::playTurn(AgentAction action)
+{
+	Snake &snake = this->_snake;
+	Board &board = this->_board;
+	SNAKE_POS const tail = snake.getTailPos();
+	SNAKE_POS const head = snake.agentMove(action);
 
-	
-// 	Board_tile tile = board.checkSnakePos(head);
-	
-// 	SNAKE_VEC const &body = snake.getSnakeBody();
-// 	if (std::count(body.begin(), body.end(), head) > 1)
-// 	tile = Board_tile::TILE_BODY;
-	
-// 	this->_applyGameRule(tile, head, tail);
+	SNAKE_VEC const &body = snake.getSnakeBody();
 
-// 	snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
+	BoardTile tile = board.checkSnakePos(head, body);
 
-// 	return ;
-// }
+	GameEvent event = this->_applyGameRule(tile, head, tail);
+
+	snake.updateSnakeVision(board.getBoardVec(), board.getBoardSizeX(), board.getBoardSizeY());
+
+	return (event);
+}
 
 void	Game::resetGame(void)
 {
@@ -83,6 +91,8 @@ void	Game::resetGame(void)
 	const int board_size_y = this->_board.getBoardSizeY();
 	this->_board.resetBoard(board_size_x, board_size_y);
 	this->_snake.resetSnake(this->_board.getBoardVec());
+	this->_board.generateApple(this->_snake.getSnakeBody(), 2, 'G');
+	this->_board.generateApple(this->_snake.getSnakeBody(), 1, 'R');
 }
 
 std::ostream	&operator<<(std::ostream &o, Game &game) {

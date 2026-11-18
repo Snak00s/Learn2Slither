@@ -30,13 +30,13 @@ using SNAKE_VEC=std::vector<std::pair<int, int>>;
 using BOARD_VEC=std::vector<std::vector<char>>;
 using BOARD_ROW=std::vector<char>;
 
-enum class Snake_dir {
-	MOVE_UP,
-	MOVE_LEFT,
-	MOVE_DOWN,
-	MOVE_RIGHT,
-	MOVE_NONE
-};
+// enum class Snake_dir {
+// 	MOVE_UP,
+// 	MOVE_LEFT,
+// 	MOVE_DOWN,
+// 	MOVE_RIGHT,
+// 	MOVE_NONE
+// };
 
 enum class Compass {
 	NORTH,
@@ -45,13 +45,19 @@ enum class Compass {
 	WEST
 };
 
-enum class Board_tile {
+enum class BoardTile {
 	TILE_NOTHING,
 	TILE_WALL,
 	TILE_BODY,
 	TILE_GREEN,
-	TILE_RED,
-	TILE_ERROR
+	TILE_RED
+};
+
+enum class GameEvent {
+	NOTHING,
+	LOOSE,
+	DECREASE,
+	ENLARGE
 };
 
 enum class AgentAction {

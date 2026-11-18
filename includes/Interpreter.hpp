@@ -8,7 +8,7 @@ class Interpreter
 	private:
 		static uint8_t	interpretRowState(BOARD_ROW const &row);
 	public:
-		static int		interpretTileReward(Board_tile const tile);
+		static int		interpretEventReward(GameEvent const event);
 		static uint32_t	interpretView(BOARD_ROW const &north, BOARD_ROW const &south, BOARD_ROW const &east, BOARD_ROW const &west);
 	};
 
