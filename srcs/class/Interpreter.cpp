@@ -7,11 +7,11 @@ int Interpreter::interpretEventReward(GameEvent const event)
 		case GameEvent::NOTHING:
 			return (-1);
 		case GameEvent::LOOSE:
-			return (-3);
+			return (-30);
 		case GameEvent::DECREASE:
-			return (-2);
+			return (-10);
 		case GameEvent::ENLARGE:
-			return (3);
+			return (30);
 		
 		default:
 			return(0);

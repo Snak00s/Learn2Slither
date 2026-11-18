@@ -24,10 +24,10 @@ int main(int argc, char **argv)
 		Agent	agent(Interpreter::interpretView(snake.getNorthVision(),
 												snake.getSouthVision(),
 												snake.getEastVision(),
-												snake.getWestVision()), 0.5, 0.9);
+												snake.getWestVision()),
+												0.1, 0.9, 0.99);
 
-		int	loose = 0;
-		while(loose < 1000)
+		while(game.getTotalGamePlayed() + 1)
 		{
 			// clear();
 			//agent action
@@ -45,16 +45,24 @@ int main(int argc, char **argv)
 																snake.getEastVision(),
 																snake.getWestVision()); //next state
 			//send state and reward to agent and update q-table
-			agent.updateQTable(state, reward);
+			agent.updateQTable(state, reward, event);
 			//loop
 
-			std::cout << game << std::endl;
-			std::cout << static_cast<int>(event) << std::endl;
-
 			if (event == GameEvent::LOOSE)
-				loose++;
+			{
+				agent.setGreedFactor(agent.getGreedFactor() * 0.99999);
+			}
 
-			sleep(1);
+			if (agent.getGreedFactor() <= 0.0001)
+			{
+				std::cout << game << std::endl;
+				usleep(200000);
+			}
+
+			// std::cout << game << std::endl;
+			// std::cout << static_cast<int>(event) << std::endl;
+
+			// sleep(1);
 		}
 		for (auto &item : agent.getQTable())
 		{
@@ -62,7 +70,9 @@ int main(int argc, char **argv)
 			print_vector(item.second);
 		}
 		std::cout << "SIZE = " << agent.getQTable().size() << std::endl;
-		std::cout << "NBR LOOSE : " << loose << std::endl;
+		std::cout << "NBR LOOSE : " << game.getTotalLosses() << std::endl;
+		std::cout << "REACH 10 AMMOUNT : " << game.getTimeReach10() << std::endl;
+		std::cout << "MAX SNAKE SIZE : " << game.getMaxSizeReached() << std::endl;
 		return(0);
 	}
 	catch(const std::exception& e)
