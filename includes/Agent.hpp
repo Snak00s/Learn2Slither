@@ -30,6 +30,7 @@ class Agent
 		double													getGreedFactor(void);
 		
 		void													setGreedFactor(double val);
+		void													setActualState(uint32_t state);
 
 
 		class LineErrorException : public std::exception

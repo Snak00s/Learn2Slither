@@ -90,7 +90,6 @@ void Agent::updateQTable(const uint32_t state, const int reward, GameEvent event
 	}
 
 	this->_bellmanEquation(state, reward, event);
-	this->_actual_state = state;
 }
 
 void	Agent::saveModel(std::string filename)
@@ -190,4 +189,9 @@ double	Agent::getGreedFactor(void)
 void	Agent::setGreedFactor(double val)
 {
 	this->_greed_factor = val;
+}
+
+void	Agent::setActualState(uint32_t state)
+{
+	this->_actual_state = state;
 }

@@ -12,6 +12,7 @@ SRCS			= main.cpp	\
 					key.cpp	\
 					utils.cpp	\
 					class/Parser.cpp	\
+					class/Project.cpp	\
 					class/Game.cpp	\
 					class/Board.cpp	\
 					class/Snake.cpp \

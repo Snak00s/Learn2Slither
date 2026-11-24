@@ -1,5 +1,11 @@
 #include"Game.hpp"
 
+void	clear()
+{
+	std::cout << "[H[2J[3J" << std::endl;
+	return ;
+}
+
 void	print_board_vec(BOARD_VEC const &vec)
 {
 	for (auto &row : vec)

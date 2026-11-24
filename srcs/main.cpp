@@ -1,14 +1,5 @@
-#include"Game.hpp"
-#include"Agent.hpp"
-#include"Interpreter.hpp"
+#include"Project.hpp"
 #include"Parser.hpp"
-
-
-void	clear()
-{
-	std::cout << "[H[2J[3J" << std::endl;
-	return ;
-}
 
 int main(int argc, char **argv)
 {
@@ -18,62 +9,23 @@ int main(int argc, char **argv)
 
 		Parser	parser;
 
-		parser.addArgToParse("-visual", "string");
+		// parser.addArgToParse("-visual", "string");
 		parser.addArgToParse("-sessions", "int");
 		parser.addArgToParse("-save", "string");
-		parser.addArgToParse("-learn", "string");
+		// parser.addArgToParse("-learning", "string");
 		parser.addArgToParse("-load", "string");
 
 		auto args = parser.parse(argv, argc);
 
-		Game	game(10, 10);
-		Snake &snake = game.getSnake();
-		// Board &board = game.getBoard();
+		const size_t		sessions = args["-sessions"].empty() ? 10000 : std::atoi(args["-sessions"][0].c_str());
 
-		Agent	agent(Interpreter::interpretView(snake.getNorthVision(),
-												snake.getSouthVision(),
-												snake.getEastVision(),
-												snake.getWestVision()),
-												0.1, 0.97, 1);
+		std::string const	load_filename = args["-load"].empty() ? "" : args["-load"][0];
 
-		if (args["-sessions"].size() != 1)
-			return(1);
-		const size_t sessions_ammount = std::atoi(args["-sessions"][0].c_str());
+		std::string const	save_filename = args["-save"].empty() ? "" : args["-save"][0];
 
-		while(game.getTotalGamePlayed() < sessions_ammount)
-		{
-			//agent action
-			int	snake_size = snake.getBodySize();
-			AgentAction const	action = agent.takeAction();
+		Project	project(10, 10, load_filename);
 
-			//----------------------------------------------------------------------
-
-			GameEvent event = game.playTurn(action);
-			//----------------------------------------------------------------------
-
-			//interpret tile and snake view
-			const int			reward = Interpreter::interpretEventReward(event);		//main reward
-			const uint32_t		state = Interpreter::interpretView(snake.getNorthVision(),
-																snake.getSouthVision(),
-																snake.getEastVision(),
-																snake.getWestVision()); //next state
-			// send state and reward to agent and update q-table
-			agent.updateQTable(state, reward, event);
-			//loop
-
-			if (event == GameEvent::LOOSE)
-			{
-				clear();
-				agent.setGreedFactor(agent.getGreedFactor() * 0.99);
-				std::cout << "nbr game = " << game.getTotalGamePlayed() << std::endl;
-				std::cout << "size = " << snake_size << std::endl;
-				std::cout << "max size = " << game.getMaxSizeReached() << std::endl;
-				std::cout << "avg size = " << game.getAvgSize() << std::endl;
-				std::cout << "REACH 10 AMMOUNT : " << game.getTimeReach10() << std::endl;
-				std::cout << "SIZE Q_TABLE = " << agent.getQTable().size() << std::endl;
-				std::cout << "greed factor = " << agent.getGreedFactor() << std::endl;
-			}
-		}
+		project.launchProject(sessions, save_filename, true, true);
 		return(0);
 	}
 	catch(const std::exception& e)

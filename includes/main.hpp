@@ -68,6 +68,7 @@ enum class AgentAction {
 	TURN_LEFT
 };
 
+void	clear();
 void	print_board_vec(BOARD_VEC const &vec);
 void	print_board_row(BOARD_ROW const &vec);
 void	print_vector(std::vector<double> const &vec);
