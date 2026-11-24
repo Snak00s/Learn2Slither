@@ -1,8 +1,8 @@
 #include"Game.hpp"
 #include"Agent.hpp"
 #include"Interpreter.hpp"
+#include"Parser.hpp"
 
-// Snake_dir	key_down(SDL_Event &event);
 
 void	clear()
 {
@@ -15,7 +15,16 @@ int main(int argc, char **argv)
 	try
 	{
 		std::srand(time(0));
-		(void)argc, (void)argv;
+
+		Parser	parser;
+
+		parser.addArgToParse("-visual", "string");
+		parser.addArgToParse("-sessions", "int");
+		parser.addArgToParse("-save", "string");
+		parser.addArgToParse("-learn", "string");
+		parser.addArgToParse("-load", "string");
+
+		auto args = parser.parse(argv, argc);
 
 		Game	game(10, 10);
 		Snake &snake = game.getSnake();
@@ -25,15 +34,19 @@ int main(int argc, char **argv)
 												snake.getSouthVision(),
 												snake.getEastVision(),
 												snake.getWestVision()),
-												0.1, 0.9, 0.99);
+												0.1, 0.97, 1);
 
-		while(game.getTotalGamePlayed() + 1)
+		if (args["-sessions"].size() != 1)
+			return(1);
+		const size_t sessions_ammount = std::atoi(args["-sessions"][0].c_str());
+
+		while(game.getTotalGamePlayed() < sessions_ammount)
 		{
-			// clear();
 			//agent action
+			int	snake_size = snake.getBodySize();
 			AgentAction const	action = agent.takeAction();
 
-			//---------------------------------------------------------------------
+			//----------------------------------------------------------------------
 
 			GameEvent event = game.playTurn(action);
 			//----------------------------------------------------------------------
@@ -44,35 +57,23 @@ int main(int argc, char **argv)
 																snake.getSouthVision(),
 																snake.getEastVision(),
 																snake.getWestVision()); //next state
-			//send state and reward to agent and update q-table
+			// send state and reward to agent and update q-table
 			agent.updateQTable(state, reward, event);
 			//loop
 
 			if (event == GameEvent::LOOSE)
 			{
-				agent.setGreedFactor(agent.getGreedFactor() * 0.99999);
+				clear();
+				agent.setGreedFactor(agent.getGreedFactor() * 0.99);
+				std::cout << "nbr game = " << game.getTotalGamePlayed() << std::endl;
+				std::cout << "size = " << snake_size << std::endl;
+				std::cout << "max size = " << game.getMaxSizeReached() << std::endl;
+				std::cout << "avg size = " << game.getAvgSize() << std::endl;
+				std::cout << "REACH 10 AMMOUNT : " << game.getTimeReach10() << std::endl;
+				std::cout << "SIZE Q_TABLE = " << agent.getQTable().size() << std::endl;
+				std::cout << "greed factor = " << agent.getGreedFactor() << std::endl;
 			}
-
-			if (agent.getGreedFactor() <= 0.0001)
-			{
-				std::cout << game << std::endl;
-				usleep(200000);
-			}
-
-			// std::cout << game << std::endl;
-			// std::cout << static_cast<int>(event) << std::endl;
-
-			// sleep(1);
 		}
-		for (auto &item : agent.getQTable())
-		{
-			std::cout << item.first << std::endl;
-			print_vector(item.second);
-		}
-		std::cout << "SIZE = " << agent.getQTable().size() << std::endl;
-		std::cout << "NBR LOOSE : " << game.getTotalLosses() << std::endl;
-		std::cout << "REACH 10 AMMOUNT : " << game.getTimeReach10() << std::endl;
-		std::cout << "MAX SNAKE SIZE : " << game.getMaxSizeReached() << std::endl;
 		return(0);
 	}
 	catch(const std::exception& e)

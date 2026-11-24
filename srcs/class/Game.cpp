@@ -99,6 +99,7 @@ void	Game::_computeResult(void)
 		this->_max_size_reached = size;
 	this->_total_game_played++;
 	this->_total_losses++;
+	this->_snake_size_vec.push_back(size);
 }
 
 std::ostream	&operator<<(std::ostream &o, Game &game) {
@@ -134,3 +135,10 @@ size_t	Game::getTotalGamePlayed(void) { return this->_total_game_played; }
 size_t	Game::getTotalLosses(void) { return this->_total_losses; }
 size_t	Game::getTimeReach10(void) { return this->_time_reach_10; }
 size_t	Game::getMaxSizeReached(void) { return this->_max_size_reached; }
+float	Game::getAvgSize(void)
+{
+	float size = 0;
+	for (auto &i : this->_snake_size_vec)
+		size += i;
+	return (size / this->_snake_size_vec.size());
+}

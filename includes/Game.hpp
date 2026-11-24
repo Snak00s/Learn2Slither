@@ -12,6 +12,8 @@ class Game
 		size_t	_total_losses;
 		size_t	_time_reach_10;
 		size_t	_max_size_reached;
+		std::vector<size_t>	_snake_size_vec;
+		size_t	_avg_size;
 
 		GameEvent	_applyGameRule(BoardTile const tile, SNAKE_POS const &head, SNAKE_POS const &tail);
 		void		_computeResult(void);
@@ -32,6 +34,7 @@ class Game
 		size_t		getTotalLosses(void);
 		size_t		getTimeReach10(void);
 		size_t		getMaxSizeReached(void);
+		float		getAvgSize(void);
 
 };
 

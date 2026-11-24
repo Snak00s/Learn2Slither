@@ -1,5 +1,5 @@
 CXX				= c++
-CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -O3
+CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -g
 
 # LDFLAGS			= -lSDL2 -lGL
 HEADERS			= ./includes/
@@ -11,10 +11,11 @@ CXXFLAGS += -I$(HEADERS)
 SRCS			= main.cpp	\
 					key.cpp	\
 					utils.cpp	\
+					class/Parser.cpp	\
 					class/Game.cpp	\
 					class/Board.cpp	\
 					class/Snake.cpp \
-					class/Agent.cpp \
+					class/Agent.cpp	\
 					class/Interpreter.cpp
 
 OBJS			= $(patsubst %.cpp, $(OBJ_DIR)%.o, $(SRCS))
