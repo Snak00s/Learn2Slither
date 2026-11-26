@@ -4,25 +4,26 @@
 
 void	initEngine(Engine &engine)
 {
-		const int	screen_width = engine.getDisplayWidth();
-		const int	screen_height = engine.getDisplayHeight();
+	const int	screen_width = engine.getDisplayWidth();
+	const int	screen_height = engine.getDisplayHeight();
 
-		engine.addDisplay("Title_screen", {99, 194, 110, 0});
-		engine.addDisplayButton("Title_screen",
-			"Enter",
-			{ static_cast<float>(screen_width / 2 - 75), static_cast<float>(screen_height / 2 + 100), 150.f, 50.f },
-			{ 255, 0, 0, 0 },
-			[&engine](){
-				engine.setCurrentDisplay("Test");
-			});
-		engine.addDisplayButton("Title_screen",
-			"Other",
-			{ static_cast<float>(screen_width / 2 - 75), static_cast<float>(screen_height / 2 + 200), 150.f, 50.f },
-			{ 255, 255, 255, 0 });
+	engine.addDisplay("Title_screen", {99, 194, 110, 0});
+	engine.addDisplayButton("Title_screen",
+		"Enter",
+		{ screen_width / 2 - 75, screen_height / 2 + 100, 150, 50 },
+		{ 255, 0, 0, 0 },
+		[&engine](){
+			std::cout << "Test" << std::endl;
+			engine.setCurrentDisplay("Test");
+			std::cout << "FEUR" << std::endl;
+		});
+	engine.addDisplayButton("Title_screen",
+		"Other",
+		{ screen_width / 2 - 75, screen_height / 2 + 200, 150, 50 },
+		{ 255, 255, 255, 0 });
 
-		engine.addDisplay("Test", {255, 0, 0, 0});
-
-		engine.setCurrentDisplay("Title_screen");
+	engine.addDisplay("Test", {255, 0, 0, 0});
+	engine.setCurrentDisplay("Title_screen");
 }
 
 int main(int argc, char **argv)
@@ -54,43 +55,46 @@ int main(int argc, char **argv)
 
 		Engine	engine;
 
-		engine.addDisplay("Title_screen", {99, 194, 110, 0});
-		engine.setCurrentDisplay("Title_screen");
+		initEngine(engine);
 
-		const int	screen_width = engine.getDisplayWidth();
-		const int	screen_height = engine.getDisplayHeight();
-		engine.addCurrentDisplayButton(
-			"Enter",
-			{
-				static_cast<float>(screen_width / 2 - 75),
-				static_cast<float>(screen_height / 2 + 100),
-				150.f,
-				50.f
-			},
-			{
-				255,
-				0,
-				0,
-				0
-			});
+		// engine.addDisplay("Title_screen", {99, 194, 110, 0});
+		// engine.setCurrentDisplay("Title_screen");
 
-		engine.addCurrentDisplayButton(
-			"Other",
-			{
-				static_cast<float>(screen_width / 2 - 75),
-				static_cast<float>(screen_height / 2 + 200),
-				150.f,
-				50.f
-			},
-			{
-				255,
-				255,
-				255,
-				0
-			});
+		// const int	screen_width = engine.getDisplayWidth();
+		// const int	screen_height = engine.getDisplayHeight();
+		// engine.addCurrentDisplayButton(
+		// 	"Enter",
+		// 	{
+		// 		screen_width / 2 - 75,
+		// 		screen_height / 2 + 100,
+		// 		150,
+		// 		50
+		// 	},
+		// 	{
+		// 		255,
+		// 		0,
+		// 		0,
+		// 		0
+		// 	});
+
+		// engine.addCurrentDisplayButton(
+		// 	"Other",
+		// 	{
+		// 		screen_width / 2 - 75,
+		// 		screen_height / 2 + 200,
+		// 		150,
+		// 		50
+		// 	},
+		// 	{
+		// 		255,
+		// 		255,
+		// 		255,
+		// 		0
+		// 	});
 		// SDL_Point	point;
 		while (engine.event())
 		{
+			engine.action();
 			engine.renderClear();
 			engine.render();
 		}

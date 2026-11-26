@@ -7,7 +7,7 @@
 // 	return ;
 // }
 
-Button::Button(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color) : _name(name)
+Button::Button(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color) : _name(name)
 {
 	this->_button_rect = { button_shape.x, button_shape.y, button_shape.w, button_shape.h };
 
@@ -18,7 +18,7 @@ Button::Button(std::string const name, SDL_FRect const button_shape, SDL_Color c
 	return ;
 }
 
-Button::Button(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color, std::function<void()> func) : _name(name), _func(func)
+Button::Button(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void()> func) : _name(name), _func(func)
 {
 	this->_button_rect = { button_shape.x, button_shape.y, button_shape.w, button_shape.h };
 
@@ -37,7 +37,7 @@ Button::~Button()
 void	Button::render(SDL_Renderer *renderer)
 {
 	SDL_SetRenderDrawColor(renderer, this->_background_color.r, this->_background_color.g, this->_background_color.b, this->_background_color.a);
-	SDL_RenderFillRectF(renderer, &this->_button_rect);
+	SDL_RenderFillRect(renderer, &this->_button_rect);
 	// SDL_RenderDrawRectF(renderer, &this->_button_rect);
 	return ;
 }

@@ -15,13 +15,13 @@ Display::~Display()
 	return ;
 }
 
-void	Display::addButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color, std::function<void()> func)
+void	Display::addButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void()> func)
 {
 	this->_button_vec.emplace_back(name, button_shape, background_color, func);
 	return ;
 }
 
-void	Display::addButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color)
+void	Display::addButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color)
 {
 	this->_button_vec.emplace_back(name, button_shape, background_color);
 	return ;

@@ -27,9 +27,9 @@ class Engine
 		~Engine();
 
 		std::shared_ptr<Display>	addDisplay(std::string const display_name, SDL_Color const background_color);
-		void						addDisplayButton(std::string const display_name, std::string const name, SDL_FRect const button_shape, SDL_Color const background_color);
-		void						addDisplayButton(std::string const display_name, std::string const name, SDL_FRect const button_shape, SDL_Color const background_color, std::function<void ()> func);
-		void						addCurrentDisplayButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color);
+		void						addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color);
+		void						addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func);
+		void						addCurrentDisplayButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color);
 
 		int							event(void);
 		int							action(void);

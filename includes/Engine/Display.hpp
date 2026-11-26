@@ -23,8 +23,8 @@ class Display
 
 
 		void	render(SDL_Renderer *renderer);
-		void	addButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color);
-		void	addButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color, std::function<void()> func);
+		void	addButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color);
+		void	addButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void()> func);
 
 		std::string const getName(void);
 

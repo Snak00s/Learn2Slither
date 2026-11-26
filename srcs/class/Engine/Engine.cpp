@@ -100,23 +100,23 @@ std::shared_ptr<Display>	Engine::addDisplay(std::string const name, SDL_Color co
 		return (new_display_pair.first->second);
 }
 
-void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_FRect const button_shape, SDL_Color const background_color)
+void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color)
 {
 	if (this->_display_vec.find(display_name) == this->_display_vec.end())
 		throw DisplayNotFoundedError(display_name);
-	this->_display_vec[name]->addButton(name, button_shape, background_color);
+	this->_display_vec[display_name]->addButton(name, button_shape, background_color);
 	return ;
 }
 
-void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_FRect const button_shape, SDL_Color const background_color, std::function<void ()> func)
+void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func)
 {
 	if (this->_display_vec.find(display_name) == this->_display_vec.end())
 		throw DisplayNotFoundedError(display_name);
-	this->_display_vec[name]->addButton(name, button_shape, background_color, func);
+	this->_display_vec[display_name]->addButton(name, button_shape, background_color, func);
 	return ;
 }
 
-void	Engine::addCurrentDisplayButton(std::string const name, SDL_FRect const button_shape, SDL_Color const background_color)
+void	Engine::addCurrentDisplayButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color)
 {
 	this->_current_display->addButton(name, button_shape, background_color);
 	return ;
@@ -124,6 +124,7 @@ void	Engine::addCurrentDisplayButton(std::string const name, SDL_FRect const but
 
 int	Engine::event(void)
 {
+	SDL_GetMouseState(&this->_mouse_state.x, &this->_mouse_state.y);
 	while (SDL_PollEvent(&this->_event))
 	{
 		if (this->_event.type == SDL_QUIT)
@@ -147,14 +148,22 @@ int	Engine::event(void)
 	return (1);
 }
 
-// int	Engine::action(void)
-// {
-// 	auto &actual = this->getCurrentDisplay()->getButtons();
-// 	if (this->_left_click)
-// 	{
-// 		std::find_if(actual.begin(), actual.end(), SDL_PointInRect(static_cast<SDL_FPoint>(&this->_mouse_state), [](){}))
-// 	}
-// }
+int	Engine::action(void)
+{
+	auto &actual = this->getCurrentDisplay()->getButtons();
+	if (this->_left_click)
+	{
+		auto but = std::find_if(actual.begin(), actual.end(),
+		[this](Button const &b)
+		{
+			return SDL_PointInRect(&this->_mouse_state, b.getRect()) == SDL_TRUE;
+		});
+
+		if (but != actual.end())
+			but->click();
+	}
+	return(0);
+}
 
 int		Engine::renderClear(void)
 {
