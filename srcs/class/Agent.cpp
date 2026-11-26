@@ -15,6 +15,7 @@ void	Agent::_pickBestAction(void)
 {
 	std::vector<double> const &actions = this->_q_table[this->_actual_state];
 
+	std::cout << actions[0] << ' ' << actions[1] << ' ' << actions[2] << std::endl;
 	size_t best_action_idx = 0;
 	for (int i = 1; i < 3; i++)
 	{
@@ -161,12 +162,21 @@ void	Agent::loadModel(std::string model_filename)
 		std::string const action_2(line, action_1_end + 1, action_2_size);
 		std::string const action_3(line, action_2_end + 1, action_3_size);
 
-		if (!isnumber(state, false) || !isnumber(action_1, true) || !isnumber(action_2, true) || !isnumber(action_3, true))
+		char *endNumber;
+		const double act_1 = std::strtod(action_1.c_str(), &endNumber);
+		if (*endNumber != '\0')
+			throw LineErrorException(line_idx);
+		const double act_2 = std::strtod(action_2.c_str(), &endNumber);
+		if (*endNumber != '\0')
+			throw LineErrorException(line_idx);
+		const double act_3 = std::strtod(action_3.c_str(), &endNumber);
+		if (*endNumber != '\0')
+			throw LineErrorException(line_idx);
+		const uint32_t state_val = std::strtoul(state.c_str(), &endNumber, 10);
+		if (*endNumber != '\0')
 			throw LineErrorException(line_idx);
 
-		const uint32_t state_val = std::atoi(state.c_str());
-
-		double actions_lst[] = {std::atof(action_1.c_str()), std::atof(action_2.c_str()), std::atof(action_3.c_str())};
+		double actions_lst[] = {act_1, act_2, act_3};
 		std::vector<double> actions;
 		actions.assign(actions_lst, actions_lst + 3);
 		this->_q_table.emplace(state_val, actions);

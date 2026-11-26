@@ -30,6 +30,7 @@ class Parser
 					return (this->_error.c_str());
 				}
 		};
+
 		class TypeErrorException : public std::exception
 		{
 			protected:

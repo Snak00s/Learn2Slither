@@ -8,8 +8,8 @@
 class Project
 {
 private:
-	Game _game;
-	Agent _agent;
+	Game	_game;
+	Agent	_agent;
 public:
 	Project(const size_t game_board_size_x, const size_t game_board_size_y, std::string load_model_filename);
 	~Project();

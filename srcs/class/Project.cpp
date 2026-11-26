@@ -53,6 +53,7 @@ void	Project::launchProject(const size_t sessions_ammount, std::string save_mode
 				agent.setGreedFactor(agent.getGreedFactor() * 0.99);
 			if (visual == true)
 			{
+				std::cout << game << std::endl;
 				std::cout << "nbr game = " << game.getTotalGamePlayed() << std::endl;
 				std::cout << "size = " << snake_size << std::endl;
 				std::cout << "max size = " << game.getMaxSizeReached() << std::endl;
@@ -61,6 +62,11 @@ void	Project::launchProject(const size_t sessions_ammount, std::string save_mode
 				std::cout << "SIZE Q_TABLE = " << agent.getQTable().size() << std::endl;
 				std::cout << "greed factor = " << agent.getGreedFactor() << std::endl;
 			}
+		}
+		if (visual == true)
+		{
+			std::cout << game << std::endl;
+			usleep(200000);
 		}
 	}
 	if (!save_model_filename.empty() && save_model_filename != "")

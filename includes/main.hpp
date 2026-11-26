@@ -24,7 +24,8 @@
 # include <bit>
 # include <format>
 # include <filesystem>
-#include <variant>
+# include <functional>
+# include <memory>
 
 using SNAKE_POS=std::pair<int, int>;
 using SNAKE_VEC=std::vector<std::pair<int, int>>;

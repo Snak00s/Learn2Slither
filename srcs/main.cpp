@@ -1,31 +1,99 @@
 #include"Project.hpp"
 #include"Parser.hpp"
+#include"Engine/Engine.hpp"
+
+void	initEngine(Engine &engine)
+{
+		const int	screen_width = engine.getDisplayWidth();
+		const int	screen_height = engine.getDisplayHeight();
+
+		engine.addDisplay("Title_screen", {99, 194, 110, 0});
+		engine.addDisplayButton("Title_screen",
+			"Enter",
+			{ static_cast<float>(screen_width / 2 - 75), static_cast<float>(screen_height / 2 + 100), 150.f, 50.f },
+			{ 255, 0, 0, 0 },
+			[&engine](){
+				engine.setCurrentDisplay("Test");
+			});
+		engine.addDisplayButton("Title_screen",
+			"Other",
+			{ static_cast<float>(screen_width / 2 - 75), static_cast<float>(screen_height / 2 + 200), 150.f, 50.f },
+			{ 255, 255, 255, 0 });
+
+		engine.addDisplay("Test", {255, 0, 0, 0});
+
+		engine.setCurrentDisplay("Title_screen");
+}
 
 int main(int argc, char **argv)
 {
+	(void)argc, (void)argv;
 	try
 	{
-		std::srand(time(0));
+		// std::srand(time(0));
 
-		Parser	parser;
+		// Parser	parser;
 
-		// parser.addArgToParse("-visual", "string");
-		parser.addArgToParse("-sessions", "int");
-		parser.addArgToParse("-save", "string");
-		// parser.addArgToParse("-learning", "string");
-		parser.addArgToParse("-load", "string");
+		// // parser.addArgToParse("-visual", "string");
+		// parser.addArgToParse("-sessions", "int");
+		// parser.addArgToParse("-save", "string");
+		// // parser.addArgToParse("-learning", "string");
+		// parser.addArgToParse("-load", "string");
 
-		auto args = parser.parse(argv, argc);
+		// auto args = parser.parse(argv, argc);
 
-		const size_t		sessions = args["-sessions"].empty() ? 10000 : std::atoi(args["-sessions"][0].c_str());
+		// const size_t		sessions = args["-sessions"].empty() ? 10000 : std::atoi(args["-sessions"][0].c_str());
 
-		std::string const	load_filename = args["-load"].empty() ? "" : args["-load"][0];
+		// std::string const	load_filename = args["-load"].empty() ? "" : args["-load"][0];
 
-		std::string const	save_filename = args["-save"].empty() ? "" : args["-save"][0];
+		// std::string const	save_filename = args["-save"].empty() ? "" : args["-save"][0];
 
-		Project	project(10, 10, load_filename);
+		// Project	project(10, 10, load_filename);
 
-		project.launchProject(sessions, save_filename, true, true);
+		// project.launchProject(sessions, save_filename, false, true);
+
+		Engine	engine;
+
+		engine.addDisplay("Title_screen", {99, 194, 110, 0});
+		engine.setCurrentDisplay("Title_screen");
+
+		const int	screen_width = engine.getDisplayWidth();
+		const int	screen_height = engine.getDisplayHeight();
+		engine.addCurrentDisplayButton(
+			"Enter",
+			{
+				static_cast<float>(screen_width / 2 - 75),
+				static_cast<float>(screen_height / 2 + 100),
+				150.f,
+				50.f
+			},
+			{
+				255,
+				0,
+				0,
+				0
+			});
+
+		engine.addCurrentDisplayButton(
+			"Other",
+			{
+				static_cast<float>(screen_width / 2 - 75),
+				static_cast<float>(screen_height / 2 + 200),
+				150.f,
+				50.f
+			},
+			{
+				255,
+				255,
+				255,
+				0
+			});
+		// SDL_Point	point;
+		while (engine.event())
+		{
+			engine.renderClear();
+			engine.render();
+		}
 		return(0);
 	}
 	catch(const std::exception& e)
