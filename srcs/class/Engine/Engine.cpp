@@ -1,13 +1,20 @@
 #include "Engine/Engine.hpp"
 
-Engine::Engine(void) : _mouse_state({0, 0}), _left_click(false), _display_vec({{"Default", std::make_shared<Display>("Default", (SDL_Color){0, 0, 0, 0})}}),
+Engine::Engine(void) : _running(false), _mouse_state({0, 0}), _display_vec({{"Default", std::make_shared<Display>("Default", (SDL_Color){0, 0, 0, 0})}}),
 	_current_display(this->_display_vec["Default"])
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
-		std::cout << "SDL_Init : " << SDL_GetError() << std::endl;
-		exit(1);
+		std::cerr << "SDL_Init : " << SDL_GetError() << std::endl;
+		throw std::runtime_error("");
 	}
+
+	if (TTF_Init() != 0)
+	{
+		std::cerr << "TTF_Init : " << TTF_GetError() << std::endl;
+		throw std::runtime_error("");
+	}
+
 	int n = SDL_GetNumRenderDrivers();
 	for (int i = 0; i < n; i++)
 	{
@@ -20,10 +27,11 @@ Engine::Engine(void) : _mouse_state({0, 0}), _left_click(false), _display_vec({{
 			break;
 		}
 	}
+
 	if (SDL_GetDesktopDisplayMode(0, &this->_display_config) != 0)
 	{
-		std::cout << "Display : " << SDL_GetError() << std::endl;
-		exit(1);
+		std::cerr << "Display : " << SDL_GetError() << std::endl;
+		throw std::runtime_error("");
 	}
 
 	this->_displayWidth = this->_display_config.w / 2;
@@ -36,22 +44,47 @@ Engine::Engine(void) : _mouse_state({0, 0}), _left_click(false), _display_vec({{
 		this->_displayWidth, this->_displayHeight,
 		SDL_WINDOW_SHOWN
 	);
-
 	if (!this->_win)
 	{
-		std::cout << "Window : " << SDL_GetError() << std::endl;
+		std::cerr << "Window : " << SDL_GetError() << std::endl;
+		TTF_Quit();
 		SDL_Quit();
-		exit(1);
+		throw std::runtime_error("");
 	}
+
 	this->_renderer = SDL_CreateRenderer(this->_win, n, SDL_RENDERER_ACCELERATED);
 	if (!this->_renderer) {
-		std::cout << "Render :" << SDL_GetError() << std::endl;
+		std::cerr << "Render :" << SDL_GetError() << std::endl;
+		TTF_Quit();
 		SDL_DestroyWindow(this->_win);
 		SDL_Quit();
-		exit(1);
+		throw std::runtime_error("");
 	}
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
+	this->_font = TTF_OpenFont("ttf_font/04B_03__.TTF", 32);
+	if (this->_font == NULL) {
+		std::cerr << "TTF_Font :" << TTF_GetError() << std::endl;
+		throw std::runtime_error("");
+	}
+}
+
+int		Engine::start(void)
+{
+	this->_running = true;
+	while(this->_running == true)
+	{
+		this->event();
+		this->displayAction();
+		this->renderClear();
+		this->render();
+	}
+	return (1);
+}
+
+void	Engine::quit(void)
+{
+	this->_running = false;
 }
 
 SDL_Texture	*Engine::_loadTexture(std::string path, int &imgW, int &imgH)
@@ -84,6 +117,7 @@ SDL_Texture	*Engine::_loadTexture(std::string path, int &imgW, int &imgH)
 
 Engine::~Engine()
 {
+	TTF_Quit();
 	SDL_DestroyRenderer(this->_renderer);
 	SDL_DestroyWindow(this->_win);
 	SDL_Quit();
@@ -100,69 +134,55 @@ std::shared_ptr<Display>	Engine::addDisplay(std::string const name, SDL_Color co
 		return (new_display_pair.first->second);
 }
 
-void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color)
+void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_Renderer *renderer, std::string const button_text, SDL_Color const text_color, TTF_Font *text_font, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func)
 {
 	if (this->_display_vec.find(display_name) == this->_display_vec.end())
 		throw DisplayNotFoundedError(display_name);
-	this->_display_vec[display_name]->addButton(name, button_shape, background_color);
+	this->_display_vec[display_name]->addButton(name, renderer, button_text, text_color, text_font, button_shape, background_color, func);
 	return ;
 }
 
-void	Engine::addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func)
+void	Engine::addCurrentDisplayButton(std::string const name, SDL_Renderer *renderer, std::string const button_text, SDL_Color const text_color, TTF_Font *text_font, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func)
 {
-	if (this->_display_vec.find(display_name) == this->_display_vec.end())
-		throw DisplayNotFoundedError(display_name);
-	this->_display_vec[display_name]->addButton(name, button_shape, background_color, func);
-	return ;
-}
-
-void	Engine::addCurrentDisplayButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color)
-{
-	this->_current_display->addButton(name, button_shape, background_color);
+	this->_current_display->addButton(name, renderer, button_text, text_color, text_font, button_shape, background_color, func);
 	return ;
 }
 
 int	Engine::event(void)
 {
-	SDL_GetMouseState(&this->_mouse_state.x, &this->_mouse_state.y);
+	this->_inputs_state.updateMousePos();
+	this->_inputs_state.resetInputs(false);
 	while (SDL_PollEvent(&this->_event))
 	{
-		if (this->_event.type == SDL_QUIT)
-			return (0);
-		else if (this->_event.type == SDL_KEYDOWN)
+		switch (this->_event.type)
 		{
-			if (this->_event.key.keysym.sym == SDLK_ESCAPE)
-				return (0);
-		}
-		else if (this->_event.type == SDL_MOUSEBUTTONDOWN)
-		{
-			if (this->_event.button.button == 1) // 1 = lclick, 2 = scroll click, 3 = right click
-				this->_left_click = true;
-		}
-		else if (this->_event.type == SDL_MOUSEBUTTONUP)
-		{
-			if (this->_event.button.button == 1)
-				this->_left_click = false;
+			case SDL_QUIT:
+				this->_running = false;
+				break;
+			case SDL_KEYDOWN:
+				this->_inputs_state.keyInputsDown(this->_event.key.keysym.sym);
+				break;
+			case SDL_KEYUP:
+				this->_inputs_state.keyInputsUp(this->_event.key.keysym.sym);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				this->_inputs_state.mouseInputsDown(this->_event.button.button);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				this->_inputs_state.mouseInputsUp(this->_event.button.button);
+				break;
+			
+			default:
+				break;
 		}
 	}
 	return (1);
 }
 
-int	Engine::action(void)
+int	Engine::displayAction(void)
 {
-	auto &actual = this->getCurrentDisplay()->getButtons();
-	if (this->_left_click)
-	{
-		auto but = std::find_if(actual.begin(), actual.end(),
-		[this](Button const &b)
-		{
-			return SDL_PointInRect(&this->_mouse_state, b.getRect()) == SDL_TRUE;
-		});
-
-		if (but != actual.end())
-			but->click();
-	}
-	return(0);
+	this->_current_display->generalAction(this->_inputs_state);
+	return (1);
 }
 
 int		Engine::renderClear(void)
@@ -191,3 +211,4 @@ SDL_Event		&Engine::getEvent(void) { return this->_event; }
 
 int				Engine::getDisplayWidth(void) { return this->_displayWidth; }
 int				Engine::getDisplayHeight(void) { return this->_displayHeight; }
+TTF_Font		*Engine::getFont(void) { return this->_font; }

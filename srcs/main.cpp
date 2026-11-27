@@ -8,19 +8,26 @@ void	initEngine(Engine &engine)
 	const int	screen_height = engine.getDisplayHeight();
 
 	engine.addDisplay("Title_screen", {99, 194, 110, 0});
+
 	engine.addDisplayButton("Title_screen",
 		"Enter",
+		engine.getRenderer(),
+		"Enter",
+		{0, 0, 0, 0},
+		engine.getFont(),
 		{ screen_width / 2 - 75, screen_height / 2 + 100, 150, 50 },
-		{ 255, 0, 0, 0 },
-		[&engine](){
-			std::cout << "Test" << std::endl;
-			engine.setCurrentDisplay("Test");
-			std::cout << "FEUR" << std::endl;
-		});
+		{ 255, 255, 255, 0 },
+		[&engine](){ engine.setCurrentDisplay("Test"); });
+
 	engine.addDisplayButton("Title_screen",
-		"Other",
+		"Quit",
+		engine.getRenderer(),
+		"Quit",
+		{0, 0, 0, 0},
+		engine.getFont(),
 		{ screen_width / 2 - 75, screen_height / 2 + 200, 150, 50 },
-		{ 255, 255, 255, 0 });
+		{ 255, 255, 255, 0 },
+		[&engine](){ engine.quit(); });
 
 	engine.addDisplay("Test", {255, 0, 0, 0});
 	engine.setCurrentDisplay("Title_screen");
@@ -52,52 +59,10 @@ int main(int argc, char **argv)
 		// Project	project(10, 10, load_filename);
 
 		// project.launchProject(sessions, save_filename, false, true);
-
 		Engine	engine;
 
 		initEngine(engine);
-
-		// engine.addDisplay("Title_screen", {99, 194, 110, 0});
-		// engine.setCurrentDisplay("Title_screen");
-
-		// const int	screen_width = engine.getDisplayWidth();
-		// const int	screen_height = engine.getDisplayHeight();
-		// engine.addCurrentDisplayButton(
-		// 	"Enter",
-		// 	{
-		// 		screen_width / 2 - 75,
-		// 		screen_height / 2 + 100,
-		// 		150,
-		// 		50
-		// 	},
-		// 	{
-		// 		255,
-		// 		0,
-		// 		0,
-		// 		0
-		// 	});
-
-		// engine.addCurrentDisplayButton(
-		// 	"Other",
-		// 	{
-		// 		screen_width / 2 - 75,
-		// 		screen_height / 2 + 200,
-		// 		150,
-		// 		50
-		// 	},
-		// 	{
-		// 		255,
-		// 		255,
-		// 		255,
-		// 		0
-		// 	});
-		// SDL_Point	point;
-		while (engine.event())
-		{
-			engine.action();
-			engine.renderClear();
-			engine.render();
-		}
+		engine.start();
 		return(0);
 	}
 	catch(const std::exception& e)

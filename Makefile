@@ -1,7 +1,7 @@
 CXX				= c++
 CXXFLAGS		= -Wall -Werror -Wextra -std=c++20 -g
 
-LDFLAGS			= -lSDL2 -lGL
+SDLFLAGS			= -lSDL2 -lGL -lSDL2_ttf
 HEADERS			= ./includes/
 SRC_DIR			= ./srcs/
 OBJ_DIR			= ./objs/
@@ -14,6 +14,7 @@ SRCS			= main.cpp	\
 					class/Engine/Button.cpp	\
 					class/Engine/Engine.cpp	\
 					class/Engine/Display.cpp	\
+					class/Engine/InputsState.cpp	\
 					class/Project.cpp	\
 					class/Game.cpp	\
 					class/Board.cpp	\
@@ -29,7 +30,7 @@ NAME			= Learn2Slither
 all: $(NAME)
 
 $(NAME): $(OBJS)
-		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
+		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(SDLFLAGS)
 # 		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp

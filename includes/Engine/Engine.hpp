@@ -3,6 +3,7 @@
 
 #include"main.hpp"
 #include"Display.hpp"
+#include"InputsState.hpp"
 
 class Engine
 {
@@ -11,9 +12,11 @@ class Engine
 		SDL_Window													*_win;
 		SDL_Event													_event;
 		SDL_DisplayMode												_display_config;
+		TTF_Font													*_font;
+		bool														_running;
 
 		SDL_Point													_mouse_state;
-		bool														_left_click;
+		InputsState													_inputs_state;
 
 		int															_displayWidth;
 		int															_displayHeight;
@@ -26,13 +29,19 @@ class Engine
 		Engine(void);
 		~Engine();
 
+		int							start(void);
+		void						quit(void);
+
 		std::shared_ptr<Display>	addDisplay(std::string const display_name, SDL_Color const background_color);
-		void						addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color);
-		void						addDisplayButton(std::string const display_name, std::string const name, SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func);
-		void						addCurrentDisplayButton(std::string const name, SDL_Rect const button_shape, SDL_Color const background_color);
+		void						addDisplayButton(std::string const display_name, std::string const name, SDL_Renderer *renderer,
+														std::string const button_text, SDL_Color const text_color, TTF_Font *text_font,
+														SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func);
+		void						addCurrentDisplayButton(std::string const name, SDL_Renderer *renderer,
+															std::string const button_text, SDL_Color const text_color, TTF_Font *text_font,
+															SDL_Rect const button_shape, SDL_Color const background_color, std::function<void ()> func);
 
 		int							event(void);
-		int							action(void);
+		int							displayAction(void);
 		int							renderClear(void);
 		void						render(void);
 
@@ -43,8 +52,9 @@ class Engine
 
 		int							getDisplayWidth(void);
 		int							getDisplayHeight(void);
+		TTF_Font					*getFont(void);
 
-		void			setCurrentDisplay(std::string const name);
+		void						setCurrentDisplay(std::string const name);
 
 		class DisplayCreationError : public std::exception
 		{
